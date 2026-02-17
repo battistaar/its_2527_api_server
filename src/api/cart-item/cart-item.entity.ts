@@ -3,3 +3,13 @@ export interface CartItem {
     product: string;
     quantity: number;
 }
+
+// {
+//     id: '1231',
+//     product: {
+//         name: 'test',
+//         description: '....'
+//         ...
+//     },
+//     quantity: 5
+// }
