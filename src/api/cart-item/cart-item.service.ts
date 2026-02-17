@@ -1,32 +1,48 @@
 import { cart } from '../../cart-data';
 
-export async function find() {
+export class CartItemService {
+  async find() {
     return cart;
-}
-
-export async function getById(id: string) {
+  }
+  
+  async getById(id: string) {
     const item = cart.find(element => element.id === id);
     
     return item ?? null;
-}
-
-export async function add(item) {
+  }
+  
+  async add(item) {
     const id: string = cart.length.toString();
     const newItem = {
-        id,
-        ...item
+      id,
+      ...item
     };
     cart.push(newItem);
     return newItem;
-}
-
-export async function update(id, data) {
-    const item = await getById(id);
+  }
+  
+  async update(id, data) {
+    const item = await this.getById(id);
     if (!item) {
-        return null;
+      return null;
     }
-
+    
     Object.assign(item, data);
     
     return item;
+  }
+  
+  async remove(id) {
+    const item = await this.getById(id);
+    if (!item) {
+      return null;
+    }
+    const index = cart.indexOf(item);
+    
+    cart.splice(index, 1);
+    
+    return item;
+  }
 }
+
+export default new CartItemService();
