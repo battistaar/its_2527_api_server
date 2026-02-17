@@ -1,17 +1,18 @@
 import { cart } from '../../cart-data';
+import { CartItem } from './cart-item.entity';
 
 export class CartItemService {
-  async find() {
+  async find(): Promise<CartItem[]> {
     return cart;
   }
   
-  async getById(id: string) {
+  async getById(id: string): Promise<CartItem | null> {
     const item = cart.find(element => element.id === id);
     
     return item ?? null;
   }
   
-  async add(item) {
+  async add(item: Omit<CartItem, 'id'>): Promise<CartItem> {
     const id: string = cart.length.toString();
     const newItem = {
       id,
@@ -21,7 +22,7 @@ export class CartItemService {
     return newItem;
   }
   
-  async update(id, data) {
+  async update(id: string, data: Partial<Omit<CartItem, 'id'>>): Promise<CartItem | null> {
     const item = await this.getById(id);
     if (!item) {
       return null;
@@ -32,7 +33,7 @@ export class CartItemService {
     return item;
   }
   
-  async remove(id) {
+  async remove(id: string): Promise<CartItem | null> {
     const item = await this.getById(id);
     if (!item) {
       return null;

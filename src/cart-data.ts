@@ -1,4 +1,6 @@
-export const cart = [
+import { CartItem } from "./api/cart-item/cart-item.entity";
+
+export const cart: CartItem[] = [
   {
     id: '1',
     name: 'ssd',
