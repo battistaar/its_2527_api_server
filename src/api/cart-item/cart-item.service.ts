@@ -1,6 +1,6 @@
-import { cart } from '../../cart-data';
 import { CartItem } from './cart-item.entity';
 
+const cart: CartItem[] = [];
 export class CartItemService {
   async find(): Promise<CartItem[]> {
     return cart;

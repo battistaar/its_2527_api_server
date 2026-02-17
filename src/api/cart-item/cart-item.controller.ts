@@ -1,13 +1,16 @@
-import { Request, Response, NextFunction } from 'express';
+import { Response, NextFunction } from 'express';
 import cartItemSrv from './cart-item.service';
+import { TypedRequest } from '../../utils/typed-request';
+import { CreateCartItemDto, UpdateCartItemDto } from './cart-item.dto';
+import { IdParams } from '../../utils/id-params';
 
-export const list = async (req: Request, res: Response) => {
+export const list = async (req: TypedRequest, res: Response) => {
   let results = await cartItemSrv.find();
   res.json(results);
 }
 
-export const detail = async (req: Request, res: Response, next: NextFunction) => {
-  const id = req.params.id as string;
+export const detail = async (req: TypedRequest<unknown, unknown, IdParams>, res: Response, next: NextFunction) => {
+  const id = req.params.id;
   const item = await cartItemSrv.getById(id);
   if (!item) {
     res.status(404);
@@ -18,18 +21,23 @@ export const detail = async (req: Request, res: Response, next: NextFunction) =>
   res.json(item);
 }
 
-export const add = async (req: Request, res: Response, next: NextFunction) => {
+export const add = async (req: TypedRequest<CreateCartItemDto>, res: Response, next: NextFunction) => {
   console.log(req.body);
-  const newItem = req.body;
+  const { quantity, productId } = req.body;
 
-  const added = await cartItemSrv.add(newItem)
+  const toAdd = {
+    quantity,
+    product: productId
+  }
+
+  const added = await cartItemSrv.add(toAdd)
 
   res.json(added);
 }
 
-export const updateQuantity = async (req: Request, res: Response, next: NextFunction) => {
-  const id: string = req.params.id as string;
-  const newQuantity: number = req.body.quantity;
+export const updateQuantity = async (req: TypedRequest<UpdateCartItemDto, unknown, IdParams>, res: Response, next: NextFunction) => {
+  const id = req.params.id;
+  const newQuantity = req.body.quantity;
 
   const updated = await cartItemSrv.update(id, { quantity: newQuantity });
   if (!updated) {
@@ -41,8 +49,8 @@ export const updateQuantity = async (req: Request, res: Response, next: NextFunc
   res.json(updated);
 }
 
-export const remove = async (req: Request, res: Response, next: NextFunction) => {
-  const id: string = req.params.id as string;
+export const remove = async (req: TypedRequest<unknown, unknown, IdParams>, res: Response, next: NextFunction) => {
+  const id = req.params.id;
   const removed = await cartItemSrv.remove(id);
   if (!removed) {
     res.status(404);
