@@ -1,21 +1,15 @@
 import { Request, Response, NextFunction } from 'express';
-import { cart } from '../../cart-data';
+import { getById, add as addItem, update, find } from './cart-item.service';
 
-export const list = (req: Request, res: Response) => {
-  console.log(req.query);
-  let limit = Number.MAX_VALUE;
-  if (req.query.limit) {
-    limit = parseInt(req.query.limit as string);
-  }
 
-  let results = cart.slice(0, limit);
+export const list = async (req: Request, res: Response) => {
+  let results = await find();
   res.json(results);
 }
 
-export const detail = (req: Request, res: Response, next: NextFunction) => {
-  console.log(req.params);
-  const id = parseInt(req.params.id as string);
-  const item = cart[id];
+export const detail = async (req: Request, res: Response, next: NextFunction) => {
+  const id = req.params.id as string;
+  const item = await getById(id);
   if (!item) {
     res.status(404);
     res.send();
@@ -25,11 +19,25 @@ export const detail = (req: Request, res: Response, next: NextFunction) => {
   res.json(item);
 }
 
-export const add = (req: Request, res: Response, next: NextFunction) => {
+export const add = async (req: Request, res: Response, next: NextFunction) => {
   console.log(req.body);
   const newItem = req.body;
 
-  cart.push(newItem);
+  const added = await addItem(newItem)
 
-  res.json(newItem);
+  res.json(added);
+}
+
+export const updateQuantity = async (req: Request, res: Response, next: NextFunction) => {
+  const id: string = req.params.id as string;
+  const newQuantity: number = req.body.quantity;
+
+  const updated = await update(id, { quantity: newQuantity });
+  if (!updated) {
+    res.status(404);
+    res.send();
+    return;
+  }
+
+  res.json(updated);
 }
