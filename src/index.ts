@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 
 const server = createServer(app);
 
+mongoose.set('debug', true);
 mongoose.connect('mongodb://localhost:27017/its-cart')
 .then(() => {
   server.listen(3000, () => {
