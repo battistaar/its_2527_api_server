@@ -1,9 +1,9 @@
 import { faker } from '@faker-js/faker/locale/it';
-import { writeFileSync } from 'node:fs';
+import { ProductModel } from './src/api/product/product.model';
+import mongoose from 'mongoose';
 
 function generateRandomProduct() {
     return {
-        id: faker.database.mongodbObjectId(),
         name: faker.commerce.product(),
         description: faker.commerce.productDescription(),
         netPrice: parseFloat(faker.commerce.price()), // 15.5
@@ -12,9 +12,23 @@ function generateRandomProduct() {
     }
 }
 
-function generateProducts(numOfProducts: number) {
+async function generateProducts(numOfProducts: number) {
     const data = Array.from({length: numOfProducts}, () => generateRandomProduct());
-    writeFileSync('./products.json', JSON.stringify(data), { encoding: 'utf-8' });
+    return ProductModel.create(data);
 }
 
-generateProducts(200);
+const numOfProducts = 200;
+mongoose.connect('mongodb://localhost:27017/its-cart')
+  .then(() => {
+    return ProductModel.deleteMany({});
+  })
+  .then(() => {
+    return generateProducts(numOfProducts);
+  })
+  .then(() => {
+    console.log(`inserted ${numOfProducts} products`);
+    process.exit();
+  })
+  .catch(err => {
+    console.error(err);
+  })

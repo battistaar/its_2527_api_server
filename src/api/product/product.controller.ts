@@ -24,5 +24,8 @@ export const detail = async (
       res.send();
       return;
     }
+
+    console.log(item.id);
+
     res.json(item);
 }
