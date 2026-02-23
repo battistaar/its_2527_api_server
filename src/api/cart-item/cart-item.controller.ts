@@ -3,6 +3,7 @@ import cartItemSrv from './cart-item.service';
 import { TypedRequest } from '../../utils/typed-request';
 import { CreateCartItemDto, UpdateCartItemDto } from './cart-item.dto';
 import { IdParams } from '../../utils/id-params';
+import productSrv from '../product/product.service';
 
 export const list = async (req: TypedRequest, res: Response) => {
   let results = await cartItemSrv.find();
@@ -22,8 +23,14 @@ export const detail = async (req: TypedRequest<unknown, unknown, IdParams>, res:
 }
 
 export const add = async (req: TypedRequest<CreateCartItemDto>, res: Response, next: NextFunction) => {
-  console.log(req.body);
   const { quantity, productId } = req.body;
+
+  const exists = await productSrv.getById(productId);
+
+  if (!exists)  {
+    res.sendStatus(404);
+    return;
+  }
 
   const toAdd = {
     quantity,
