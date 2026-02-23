@@ -3,7 +3,7 @@ import { CartItem } from "./cart-item.entity";
 
 const cartItemSchema = new Schema<CartItem>({
   quantity: Number,
-  product: Schema.Types.ObjectId
+  product: { type: Schema.Types.ObjectId, ref: 'Product' }
 });
 
 cartItemSchema.set('toJSON', {
