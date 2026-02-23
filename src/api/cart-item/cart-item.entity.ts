@@ -1,15 +1,7 @@
+import { Product } from "../product/product.entity";
+
 export interface CartItem {
     id: string;
-    product: string;
+    product: string | Product;
     quantity: number;
 }
-
-// {
-//     id: '1231',
-//     product: {
-//         name: 'test',
-//         description: '....'
-//         ...
-//     },
-//     quantity: 5
-// }

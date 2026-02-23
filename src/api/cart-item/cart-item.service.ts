@@ -1,15 +1,21 @@
 import { CartItem } from './cart-item.entity';
+import productSrv from '../product/product.service';
 
 const cart: CartItem[] = [];
 export class CartItemService {
   async find(): Promise<CartItem[]> {
-    return cart;
+    return this.populateCartItem(cart);
+  }
+
+  private async _getById(id: string): Promise<CartItem | null> {
+    const item = cart.find(element => element.id === id);
+    return item ?? null;
   }
   
   async getById(id: string): Promise<CartItem | null> {
-    const item = cart.find(element => element.id === id);
+    const item = await this._getById(id);
     
-    return item ?? null;
+    return !!item ? this.populateCartItem(item) : null;
   }
   
   async add(item: Omit<CartItem, 'id'>): Promise<CartItem> {
@@ -19,18 +25,19 @@ export class CartItemService {
       ...item
     };
     cart.push(newItem);
-    return newItem;
+    return this.populateCartItem(newItem);
   }
   
   async update(id: string, data: Partial<Omit<CartItem, 'id'>>): Promise<CartItem | null> {
-    const item = await this.getById(id);
+    const item = await this._getById(id);
     if (!item) {
       return null;
     }
     
-    Object.assign(item, data);
+    Object.assign(item!, data);
     
-    return item;
+
+    return this.populateCartItem(item!);
   }
   
   async remove(id: string): Promise<CartItem | null> {
@@ -43,6 +50,26 @@ export class CartItemService {
     cart.splice(index, 1);
     
     return item;
+  }
+
+  async populateCartItem(item: CartItem): Promise<CartItem>;
+  async populateCartItem(item: CartItem[]): Promise<CartItem[]>;
+  async populateCartItem(item: CartItem | CartItem[]): Promise<CartItem | CartItem[]> {
+    if (Array.isArray(item)) {
+      const promises = item.map(i => this.populateCartItem(i));
+      return Promise.all(promises);
+    }
+
+    if (typeof item.product === 'object') {
+      return item;
+    }
+    const id = item.product;
+    const product = await productSrv.getById(id);
+
+    return {
+      ...item,
+      product: product!
+    }
   }
 }
 
