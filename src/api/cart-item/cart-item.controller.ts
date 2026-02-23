@@ -4,6 +4,7 @@ import { TypedRequest } from '../../utils/typed-request';
 import { CreateCartItemDto, UpdateCartItemDto } from './cart-item.dto';
 import { IdParams } from '../../utils/id-params';
 import productSrv from '../product/product.service';
+import { CartItem } from './cart-item.entity';
 
 export const list = async (req: TypedRequest, res: Response) => {
   let results = await cartItemSrv.find();
@@ -29,7 +30,7 @@ export const add = async (req: TypedRequest<CreateCartItemDto>, res: Response, n
 
   if (!exists)  {
     res.sendStatus(404);
-    return;
+    return; 
   }
 
   const toAdd = {
@@ -37,9 +38,9 @@ export const add = async (req: TypedRequest<CreateCartItemDto>, res: Response, n
     product: productId
   }
 
-  const added = await cartItemSrv.add(toAdd)
-
-  res.json(added);
+  const result = await cartItemSrv.addOrUpdate(toAdd);
+  
+  res.json(result);
 }
 
 export const updateQuantity = async (req: TypedRequest<UpdateCartItemDto, unknown, IdParams>, res: Response, next: NextFunction) => {

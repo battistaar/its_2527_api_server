@@ -17,6 +17,16 @@ export class CartItemService {
     
     return !!item ? this.populateCartItem(item) : null;
   }
+
+  async addOrUpdate(item: Omit<CartItem, 'id'>): Promise<CartItem> {
+    const inCart = await this.getByProduct(item.product as string);
+    if (!inCart) {
+      return this.add(item);
+    } else {
+      const res = await this.update(inCart.id, { quantity: inCart.quantity + item.quantity});
+      return res!;
+    }
+  }
   
   async add(item: Omit<CartItem, 'id'>): Promise<CartItem> {
     const id: string = cart.length.toString();
@@ -50,6 +60,11 @@ export class CartItemService {
     cart.splice(index, 1);
     
     return item;
+  }
+
+  async getByProduct(productId: string): Promise<CartItem | null> {
+    const exists = cart.find(item => item.product === productId);
+    return !!exists? this.populateCartItem(exists) : null;
   }
 
   async populateCartItem(item: CartItem): Promise<CartItem>;
