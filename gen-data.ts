@@ -13,8 +13,7 @@ function generateRandomProduct() {
 }
 
 async function generateProducts(numOfProducts: number) {
-    const data = Array.from({length: numOfProducts}, () => generateRandomProduct());
-    return ProductModel.create(data);
+    return Array.from({length: numOfProducts}, () => generateRandomProduct());
 }
 
 const numOfProducts = 200;
@@ -24,6 +23,9 @@ mongoose.connect('mongodb://localhost:27017/its-cart')
   })
   .then(() => {
     return generateProducts(numOfProducts);
+  })
+  .then(data => {
+    return ProductModel.create(data);
   })
   .then(() => {
     console.log(`inserted ${numOfProducts} products`);

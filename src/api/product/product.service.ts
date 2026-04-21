@@ -27,7 +27,9 @@ export class ProductService {
         query.netPrice.$lte = parseFloat(maxPrice);
       }
     }
+
     const results = await ProductModel.find(query);
+
     // let results = products;
     // let { name, minPrice, maxPrice } = filters;
 

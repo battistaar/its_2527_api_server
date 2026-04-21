@@ -4,67 +4,85 @@ import { TypedRequest } from '../../utils/typed-request';
 import { CreateCartItemDto, UpdateCartItemDto } from './cart-item.dto';
 import { IdParams } from '../../utils/id-params';
 import productSrv from '../product/product.service';
-import { CartItem } from './cart-item.entity';
+import { NotFoundError } from '../../errors/not-found.error';
 
-export const list = async (req: TypedRequest, res: Response) => {
-  let results = await cartItemSrv.find();
-  res.json(results);
+export const list = async (req: TypedRequest, res: Response, next: NextFunction) => {
+  try {
+    let results = await cartItemSrv.find();
+    res.json(results);
+  } catch(err) {
+    next(err);
+  }
 }
 
 export const detail = async (req: TypedRequest<unknown, unknown, IdParams>, res: Response, next: NextFunction) => {
-  const id = req.params.id;
-  const item = await cartItemSrv.getById(id);
-  if (!item) {
-    res.status(404);
-    res.send();
-    return;
-  }
+  try {
+    const id = req.params.id;
+    const item = await cartItemSrv.getById(id);
+    if (!item) {
+      throw new NotFoundError();
+    }
 
-  res.json(item);
+    res.json(item);
+  } catch(err) {
+    next(err);
+  }
 }
 
 export const add = async (req: TypedRequest<CreateCartItemDto>, res: Response, next: NextFunction) => {
-  const { quantity, productId } = req.body;
+  try {
+    const { quantity, productId } = req.body;
 
-  const exists = await productSrv.getById(productId);
+    const exists = await productSrv.getById(productId);
 
-  if (!exists)  {
-    res.sendStatus(404);
-    return; 
+    if (!exists)  {
+      throw new NotFoundError();
+    }
+
+    const toAdd = {
+      quantity,
+      product: productId
+    }
+
+    const result = await cartItemSrv.addOrUpdate(toAdd);
+
+    res.json(result);
+  } catch(err) {
+    next(err);
   }
-
-  const toAdd = {
-    quantity,
-    product: productId
-  }
-
-  const result = await cartItemSrv.addOrUpdate(toAdd);
-  
-  res.json(result);
 }
 
-export const updateQuantity = async (req: TypedRequest<UpdateCartItemDto, unknown, IdParams>, res: Response, next: NextFunction) => {
-  const id = req.params.id;
-  const newQuantity = req.body.quantity;
+export const updateQuantity = async (
+  req: TypedRequest<UpdateCartItemDto, unknown, IdParams>,
+  res: Response,
+  next: NextFunction) => {
 
-  const updated = await cartItemSrv.update(id, { quantity: newQuantity });
-  if (!updated) {
-    res.status(404);
-    res.send();
-    return;
+  try {
+    const id = req.params.id;
+    const newQuantity = req.body.quantity;
+
+    const updated = await cartItemSrv.update(id, { quantity: newQuantity });
+    if (!updated) {
+      throw new NotFoundError();
+    }
+
+    res.json(updated);
+  } catch(err) {
+    next(err);
   }
 
-  res.json(updated);
 }
 
 export const remove = async (req: TypedRequest<unknown, unknown, IdParams>, res: Response, next: NextFunction) => {
-  const id = req.params.id;
-  const removed = await cartItemSrv.remove(id);
-  if (!removed) {
-    res.status(404);
-    res.send();
-    return;
-  }
+  try {
+    const id = req.params.id;
+    const removed = await cartItemSrv.remove(id);
+    if (!removed) {
+      throw new NotFoundError();
+    }
 
-  res.send();
+    res.send();
+  } catch(err) {
+    next(err);
+  }
 }
