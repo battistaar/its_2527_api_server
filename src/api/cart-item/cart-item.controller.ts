@@ -32,7 +32,7 @@ export const detail = async (req: TypedRequest<unknown, unknown, IdParams>, res:
 export const add = async (req: TypedRequest<CreateCartItemDto>, res: Response, next: NextFunction) => {
   try {
     const { quantity, productId } = req.body;
-
+    console.log(req.body);
     const exists = await productSrv.getById(productId);
 
     if (!exists)  {

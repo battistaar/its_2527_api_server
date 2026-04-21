@@ -20,11 +20,11 @@ export class ProductService {
       query.netPrice = { };
 
       if (minPrice !== undefined) {
-        query.netPrice.$gte = parseFloat(minPrice);
+        query.netPrice.$gte = minPrice;
       }
 
       if (maxPrice !== undefined) {
-        query.netPrice.$lte = parseFloat(maxPrice);
+        query.netPrice.$lte = maxPrice;
       }
     }
 

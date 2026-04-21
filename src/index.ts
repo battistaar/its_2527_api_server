@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { createServer } from 'node:http';
 import app from './app';
 import mongoose from 'mongoose';

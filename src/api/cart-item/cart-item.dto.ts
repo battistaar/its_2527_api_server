@@ -1,8 +1,13 @@
-export interface CreateCartItemDto {
-    quantity: number;
-    productId: string;
+import { IsInt, IsMongoId, IsNumber } from "class-validator";
+
+export class CreateCartItemDto {
+  @IsInt()
+  quantity: number;
+
+  @IsMongoId()
+  productId: string;
 }
 
-export interface UpdateCartItemDto {
+export class UpdateCartItemDto {
     quantity: number;
 }
