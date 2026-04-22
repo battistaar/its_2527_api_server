@@ -20,7 +20,10 @@ function validateFn<T extends object>(dtoClass: new() => T, origin: 'body' | 'qu
         Object.defineProperty(
           req,
           'query',
-          { ...Object.getOwnPropertyDescriptor(req, 'query'), value: req.query, writable: true });
+          { ...Object.getOwnPropertyDescriptor(req, 'query'),
+            value: req.query,
+            writable: true
+          });
       }
       req[origin] = data;
       next();
