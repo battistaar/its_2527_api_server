@@ -15,6 +15,12 @@ function validateFn<T extends object>(dtoClass: new() => T, origin: 'body' | 'qu
     const data = plainToClass(dtoClass, req[origin]);
     const errors = await classValidate(data);
     if (errors.length === 0) {
+      if (origin === 'query') {
+        Object.defineProperty(
+          req,
+          'query',
+          { ...Object.getOwnPropertyDescriptor(req, 'query'), value: req.query, writable: true });
+      }
       req[origin] = data;
       next();
     } else {
