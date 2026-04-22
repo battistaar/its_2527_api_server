@@ -10,5 +10,7 @@ export class CreateCartItemDto {
 }
 
 export class UpdateCartItemDto {
-    quantity: number;
+  @IsInt()
+  @Min(0)
+  quantity: number;
 }

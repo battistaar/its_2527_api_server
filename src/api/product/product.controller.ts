@@ -4,8 +4,6 @@ import { QueryProductDto } from './product.dto';
 import productSrv from './product.service';
 import { IdParams } from '../../utils/id-params';
 import { NotFoundError } from '../../errors/not-found.error';
-import { plainToClass } from 'class-transformer';
-import { validate } from 'class-validator';
 
 export const list = async (
   req: TypedRequest<unknown, QueryProductDto>,

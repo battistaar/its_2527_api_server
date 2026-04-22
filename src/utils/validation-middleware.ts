@@ -5,9 +5,9 @@ import { TypedRequest } from "./typed-request";
 import { ValidationError } from "../errors/validation-error";
 
 function validateFn<T extends object>(dtoClass: new() => T, origin: 'body')
-  : (req: TypedRequest<T>, res: Response, next: NextFunction) => Promise<void>;
+  : (req: TypedRequest<T, unknown, unknown>, res: Response, next: NextFunction) => Promise<void>;
 function validateFn<T extends object>(dtoClass: new() => T, origin: 'query')
-  : (req: TypedRequest<unknown, T>, res: Response, next: NextFunction) => Promise<void>;
+  : (req: TypedRequest<unknown, T, unknown>, res: Response, next: NextFunction) => Promise<void>;
 function validateFn<T extends object>(dtoClass: new() => T, origin: 'params')
   : (req: TypedRequest<unknown, unknown, T>, res: Response, next: NextFunction) => Promise<void>;
 function validateFn<T extends object>(dtoClass: new() => T, origin: 'body' | 'query' | 'params') {

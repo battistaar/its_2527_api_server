@@ -1,3 +1,6 @@
-export interface IdParams {
-    id: string;
+import { IsMongoId } from "class-validator";
+
+export class IdParams {
+  @IsMongoId()
+  id: string;
 }
