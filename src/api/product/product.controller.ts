@@ -12,14 +12,7 @@ export const list = async (
   res: Response,
   next: NextFunction) => {
   try {
-    const query = plainToClass(QueryProductDto, req.query);
-    const errors = await validate(query);
-    console.log(errors);
-    if (errors.length) {
-      // torno errore al client e non procedo
-    }
-
-    const results = await productSrv.find(query);
+    const results = await productSrv.find(req.query);
     res.json(results);
   } catch(err) {
     next(err);

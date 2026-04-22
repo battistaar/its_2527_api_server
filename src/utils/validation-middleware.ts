@@ -2,6 +2,7 @@ import { plainToClass } from "class-transformer";
 import { NextFunction, Response } from "express";
 import { validate as classValidate } from "class-validator";
 import { TypedRequest } from "./typed-request";
+import { ValidationError } from "../errors/validation-error";
 
 function validateFn<T extends object>(dtoClass: new() => T, origin: 'body')
   : (req: TypedRequest<T>, res: Response, next: NextFunction) => Promise<void>;
@@ -17,8 +18,7 @@ function validateFn<T extends object>(dtoClass: new() => T, origin: 'body' | 'qu
       req[origin] = data;
       next();
     } else {
-      console.log(errors);
-      res.sendStatus(400);
+      next(new ValidationError(errors));
     }
   }
 }
