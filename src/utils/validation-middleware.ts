@@ -15,6 +15,7 @@ function validateFn<T extends object>(dtoClass: new() => T, origin: 'body' | 'qu
     const data = plainToClass(dtoClass, req[origin]);
     const errors = await classValidate(data);
     if (errors.length === 0) {
+      // fix for express > 5: makes req.query writable
       if (origin === 'query') {
         Object.defineProperty(
           req,
