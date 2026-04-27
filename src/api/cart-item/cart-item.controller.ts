@@ -8,7 +8,6 @@ import { NotFoundError } from '../../errors/not-found.error';
 
 export const list = async (req: TypedRequest, res: Response, next: NextFunction) => {
   try {
-    console.log(req.user);
     let results = await cartItemSrv.find();
     res.json(results);
   } catch(err) {
