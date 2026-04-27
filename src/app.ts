@@ -5,6 +5,8 @@ import morgan from 'morgan';
 import apiRouter from './api/routes';
 import { errorHandlers } from './errors';
 
+import './utils/auth/local/local-strategy';
+
 const app = express();
 
 app.use(cors());

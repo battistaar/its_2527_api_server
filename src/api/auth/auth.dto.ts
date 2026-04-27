@@ -21,3 +21,11 @@ export class RegisterDto {
   @IsUrl()
   picture: string;
 }
+
+export class LoginDto {
+  @IsEmail()
+  username: string;
+
+  @IsString()
+  password: string;
+}
