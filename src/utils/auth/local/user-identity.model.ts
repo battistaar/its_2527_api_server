@@ -8,7 +8,8 @@ export const userIdentitySchema = new Schema<UserIdentity>({
     type: {
       username: String,
       hashedPassword: String
-    }
+    },
+    _id: false,
   }
 });
 
