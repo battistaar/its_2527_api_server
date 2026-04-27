@@ -3,9 +3,11 @@ import { add, detail, list, remove, updateQuantity } from "./cart-item.controlle
 import { validate } from "../../utils/validation-middleware";
 import { CreateCartItemDto, UpdateCartItemDto } from "./cart-item.dto";
 import { IdParams } from "../../utils/id-params";
+import passport from "passport";
 
 const router = Router();
 
+router.use(passport.authenticate('jwt', { session: false }));
 router.get('/', list);
 router.get('/:id', validate(IdParams, 'params'), detail);
 router.post('/', validate(CreateCartItemDto, 'body'), add);

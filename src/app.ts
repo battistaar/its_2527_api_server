@@ -6,6 +6,7 @@ import apiRouter from './api/routes';
 import { errorHandlers } from './errors';
 
 import './utils/auth/local/local-strategy';
+import './utils/auth/jwt/jwt-strategy';
 
 const app = express();
 
