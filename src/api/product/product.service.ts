@@ -66,6 +66,10 @@ export class ProductService {
 
   async getById(id: string): Promise<Product | null> {
     const item = await ProductModel.findById(id);
+    const custom = {
+      ...item?.toObject(),
+      myProperty: 'ciao'
+    }
     return item;
   }
 

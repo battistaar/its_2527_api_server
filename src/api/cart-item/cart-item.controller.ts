@@ -8,7 +8,7 @@ import { NotFoundError } from '../../errors/not-found.error';
 
 export const list = async (req: TypedRequest, res: Response, next: NextFunction) => {
   try {
-    let results = await cartItemSrv.find();
+    let results = await cartItemSrv.find(req.user!.id);
     res.json(results);
   } catch(err) {
     next(err);
@@ -18,7 +18,7 @@ export const list = async (req: TypedRequest, res: Response, next: NextFunction)
 export const detail = async (req: TypedRequest<unknown, unknown, IdParams>, res: Response, next: NextFunction) => {
   try {
     const id = req.params.id;
-    const item = await cartItemSrv.getById(id);
+    const item = await cartItemSrv.getById(id, req.user!.id);
     if (!item) {
       throw new NotFoundError();
     }
@@ -44,7 +44,7 @@ export const add = async (req: TypedRequest<CreateCartItemDto>, res: Response, n
       product: productId
     }
 
-    const result = await cartItemSrv.addOrUpdate(toAdd);
+    const result = await cartItemSrv.addOrUpdate(toAdd, req.user!.id);
 
     res.json(result);
   } catch(err) {
@@ -61,7 +61,7 @@ export const updateQuantity = async (
     const id = req.params.id;
     const newQuantity = req.body.quantity;
 
-    const updated = await cartItemSrv.update(id, { quantity: newQuantity });
+    const updated = await cartItemSrv.update(id, { quantity: newQuantity }, req.user!.id);
     if (!updated) {
       throw new NotFoundError();
     }
@@ -76,7 +76,7 @@ export const updateQuantity = async (
 export const remove = async (req: TypedRequest<unknown, unknown, IdParams>, res: Response, next: NextFunction) => {
   try {
     const id = req.params.id;
-    const removed = await cartItemSrv.remove(id);
+    const removed = await cartItemSrv.remove(id, req.user!.id);
     if (!removed) {
       throw new NotFoundError();
     }
